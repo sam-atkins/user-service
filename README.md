@@ -1,5 +1,16 @@
 # User Service API
 
+[![Build Status](https://travis-ci.org/cubiio/user-service.svg?branch=master)](https://travis-ci.org/cubiio/user-service)
+
+## About
+
+User service API built with:
+
+- Python
+- Flask
+- Docker
+- and tested with unittest, coverage and Travis-ci
+
 ## Build
 
 From project root, run `docker-compose -f docker-compose-dev.yml build`
