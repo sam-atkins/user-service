@@ -2,9 +2,13 @@ FROM python:3.6.6-slim
 
 WORKDIR /usr/src/app
 
+RUN apt-get update && apt-get install postgresql-server-dev-all -y
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
+COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh
+
 COPY . /usr/src/app
 
-CMD python manage.py run -h 0.0.0.0
+CMD ["/usr/src/app/entrypoint.sh"]
