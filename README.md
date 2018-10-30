@@ -12,8 +12,22 @@ All commands are ran from the project root
 # To run the app
 docker-compose -f docker-compose-dev.yml up
 
+
 # to get logs
 docker-compose -f docker-compose-dev.yml logs
+
+# app shell
+docker-compose -f docker-compose-dev.yml run users flask shell
+```
+
+### db
+
+```bash
+# recreate db
+docker-compose -f docker-compose-dev.yml run users python manage.py recreate-db
+
+# psql db
+docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 ```
 
 ### Tests
