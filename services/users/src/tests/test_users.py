@@ -1,6 +1,8 @@
 import json
 import unittest
 
+from src import db
+from src.api.models import User
 from src.tests.base import BaseTestCase
 
 
@@ -83,6 +85,37 @@ class TestUserService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
             self.assertIn('Sorry. That email already exists.', data['message'])
+            self.assertIn('fail', data['status'])
+
+    def test_single_user(self):
+        """Ensure get single user behaves correctly."""
+        user = User(username='sam', email='sam@example.com')
+        db.session.add(user)
+        db.session.commit()
+        with self.client:
+            response = self.client.get(f'/users/{user.id}')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('sam', data['data']['username'])
+            self.assertIn('sam@example.com', data['data']['email'])
+            self.assertIn('success', data['status'])
+
+    def test_single_user_no_id(self):
+        """Ensure error is thrown if an id is not provided."""
+        with self.client:
+            response = self.client.get('/users/foo')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 404)
+            self.assertIn('User does not exist', data['message'])
+            self.assertIn('fail', data['status'])
+
+    def test_single_user_incorrect_id(self):
+        """Ensure error is thrown if the id does not exist."""
+        with self.client:
+            response = self.client.get('/users/999')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 404)
+            self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
 

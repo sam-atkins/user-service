@@ -14,6 +14,13 @@ def health_check():
 
 @users_blueprint.route('/users', methods=['POST'])
 def add_user():
+    """
+    Add a user
+
+    Returns
+    -------
+    JSON response object
+    """
     post_data = request.get_json()
     response_object = {'status': 'fail', 'message': 'Invalid payload.'}
     if not post_data:
@@ -34,3 +41,38 @@ def add_user():
     except exc.IntegrityError as e:
         db.session.rollback()
         return jsonify(response_object), 400
+
+
+@users_blueprint.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    """
+    Get single user details
+
+    Parameters
+    ----------
+        user_id : integer
+            user's id
+
+    Returns
+    -------
+    JSON response object | Exception
+        User details or exception
+    """
+    response_object = {'status': 'fail', 'message': 'User does not exist'}
+    try:
+        user = User.query.filter_by(id=int(user_id)).first()
+        if not user:
+            return jsonify(response_object), 404
+        else:
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'active': user.active
+                }
+            }
+            return jsonify(response_object), 200
+    except ValueError:
+        return jsonify(response_object), 404
