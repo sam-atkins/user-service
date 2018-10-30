@@ -2,14 +2,14 @@ import json
 import unittest
 
 from src import db
-from src.api.models import User
 from src.tests.base import BaseTestCase
+from src.tests.utils import add_user
 
 
 class TestUserService(BaseTestCase):
     """Tests for the Users Service."""
 
-    def test_users(self):
+    def test_users_healthcheck(self):
         """Ensure the /ping route behaves correctly."""
         response = self.client.get('/users/ping')
         data = json.loads(response.data.decode())
@@ -89,7 +89,7 @@ class TestUserService(BaseTestCase):
 
     def test_single_user(self):
         """Ensure get single user behaves correctly."""
-        user = User(username='sam', email='sam@example.com')
+        user = add_user(username='sam', email='sam@example.com')
         db.session.add(user)
         db.session.commit()
         with self.client:
@@ -117,6 +117,23 @@ class TestUserService(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
+
+    def test_all_users(self):
+        """Ensure get all users behaves correctly."""
+        add_user('sam', 'sam@example.com')
+        add_user('lionel', 'lionel@example.com')
+        with self.client:
+            response = self.client.get('/users')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(data['data']['users']), 2)
+            self.assertIn('sam', data['data']['users'][0]['username'])
+            self.assertIn(
+                'sam@example.com', data['data']['users'][0]['email'])
+            self.assertIn('lionel', data['data']['users'][1]['username'])
+            self.assertIn(
+                'lionel@example.com', data['data']['users'][1]['email'])
+            self.assertIn('success', data['status'])
 
 
 if __name__ == '__main__':
