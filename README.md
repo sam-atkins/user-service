@@ -9,7 +9,9 @@ User service API built with:
 - Python
 - Flask
 - Docker
-- and tested with unittest, coverage and Travis-ci
+- PostgreSQL
+- SQLAlchemy
+- and tested with unittest, coverage and Travis-CI
 
 ## Build
 
