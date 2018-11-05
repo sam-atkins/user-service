@@ -54,9 +54,9 @@ docker-compose -f docker-compose-dev.yml run users python manage.py db upgrade
 ### Tests
 
 ```bash
-# spin up the container
-docker-compose -f docker-compose-dev.yml up
-
-# in another terminal, run the manage.py test command
+# tests
 docker-compose -f docker-compose-dev.yml run users python manage.py test
+
+# coverage report
+docker-compose -f docker-compose-dev.yml run users python manage.py cov
 ```
