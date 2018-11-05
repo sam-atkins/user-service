@@ -43,6 +43,14 @@ docker-compose -f docker-compose-dev.yml run users python manage.py recreate-db
 docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 ```
 
+To make schema changes, make the changes to the Model, then run:
+
+```bash
+docker-compose -f docker-compose-dev.yml run users python manage.py db migrate
+
+docker-compose -f docker-compose-dev.yml run users python manage.py db upgrade
+```
+
 ### Tests
 
 ```bash

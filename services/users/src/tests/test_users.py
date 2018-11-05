@@ -4,6 +4,7 @@ import unittest
 from src import db
 from src.tests.base import BaseTestCase
 from src.tests.utils import add_user
+from src.tests.datasets import users
 
 
 class TestUserService(BaseTestCase):
@@ -89,7 +90,8 @@ class TestUserService(BaseTestCase):
 
     def test_single_user(self):
         """Ensure get single user behaves correctly."""
-        user = add_user(username='sam', email='sam@example.com')
+        user = add_user(
+            users.USER_ONE.get('username'), users.USER_ONE.get('email'))
         db.session.add(user)
         db.session.commit()
         with self.client:
@@ -120,8 +122,8 @@ class TestUserService(BaseTestCase):
 
     def test_all_users(self):
         """Ensure get all users behaves correctly."""
-        add_user('sam', 'sam@example.com')
-        add_user('lionel', 'lionel@example.com')
+        add_user(users.USER_ONE.get('username'), users.USER_ONE.get('email'))
+        add_user(users.USER_TWO.get('username'), users.USER_TWO.get('email'))
         with self.client:
             response = self.client.get('/users')
             data = json.loads(response.data.decode())

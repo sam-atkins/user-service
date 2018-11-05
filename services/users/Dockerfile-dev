@@ -2,7 +2,7 @@ FROM python:3.6.6-slim
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && apt-get install postgresql-server-dev-all -y
+RUN apt-get update && apt-get install --allow-unauthenticated postgresql-server-dev-all -y
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
